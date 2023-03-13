@@ -29,13 +29,13 @@ func (g *GenerateRoute) GenerateRouteString() string {
 
 	endpoint := strcase.ToLowerCamel(utils.ToPlural(g.ModelName))
 	modelNamePlural := utils.ToPlural(g.ModelName)
-
-	create := fmt.Sprintf(`routes_utils.Post(endpointGroupV1, baseResourceURL, "%v/v1", controllers.Create%v())`, endpoint, g.ModelName)
-	getAllByClientId := fmt.Sprintf(`routes_utils.Get(endpointGroupV1, baseResourceURL, "%v/v1/:customerId", controllers.Get%vByClientId())`, endpoint, modelNamePlural)
-	getAll := fmt.Sprintf(`routes_utils.Get(endpointGroupV1, baseResourceURL, "%v/v1/", controllers.Get%v())`, endpoint, modelNamePlural)
-	getById := fmt.Sprintf(`routes_utils.Get(endpointGroupV1, baseResourceURL, "%v/v1/getById/:id", controllers.Get%vById())`, endpoint, g.ModelName)
-	updateById := fmt.Sprintf(`routes_utils.Put(endpointGroupV1, baseResourceURL, "%v/v1/:id", controllers.Update%vById())`, endpoint, g.ModelName)
-	deleteById := fmt.Sprintf(`routes_utils.Del(endpointGroupV1, baseResourceURL, "%v/v1/:id", controllers.Delete%vById())`, endpoint, g.ModelName)
+	create := fmt.Sprintf("\t\troutes_utils.Post(endpointGroupV1, baseResourceURL, \"%v/v1\", controllers.Create%v())", endpoint, g.ModelName)
+	//create := fmt.Sprintf(`routes_utils.Post(endpointGroupV1, baseResourceURL, "%v/v1", controllers.Create%v())`, endpoint, g.ModelName)
+	getAllByClientId := fmt.Sprintf("\t\troutes_utils.Get(endpointGroupV1, baseResourceURL, \"%v/v1/:customerId\", controllers.Get%vByClientId())", endpoint, modelNamePlural)
+	getAll := fmt.Sprintf("\t\troutes_utils.Get(endpointGroupV1, baseResourceURL, \"%v/v1/\", controllers.Get%v())", endpoint, modelNamePlural)
+	getById := fmt.Sprintf("\t\troutes_utils.Get(endpointGroupV1, baseResourceURL, \"%v/v1/getById/:id\", controllers.Get%vById())", endpoint, g.ModelName)
+	updateById := fmt.Sprintf("\t\troutes_utils.Put(endpointGroupV1, baseResourceURL, \"%v/v1/:id\", controllers.Update%vById())", endpoint, g.ModelName)
+	deleteById := fmt.Sprintf("\t\troutes_utils.Del(endpointGroupV1, baseResourceURL, \"%v/v1/:id\", controllers.Delete%vById())", endpoint, g.ModelName)
 
 	sb.WriteString("\n")
 	sb.WriteString(create)
@@ -55,11 +55,5 @@ func (g *GenerateRoute) GenerateRouteString() string {
 	sb2.WriteString("\n")
 	sb2.WriteString("\n")
 
-	return fmt.Sprintf(`%vfunc %vRoutes(baseResourceURL string, router *gin.Engine) {
-		endpointGroupV1 := router.Group("")
-		{		
-			%v
-		}
-	}
-`, sb2.String(), g.ModelName, sb.String())
+	return fmt.Sprintf("%vfunc %vRoutes(baseResourceURL string, router *gin.Engine) {\n\n\tendpointGroupV1 := router.Group(\"\")\n\t{%v\n\t}}", sb2.String(), g.ModelName, sb.String())
 }

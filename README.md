@@ -7,7 +7,7 @@ to generate a model;
 gen-crud model User p_Name-string p_Age-int p_Email-string
 ```
 
-this creates a file  user.go and produces the struct below plus the package name and with 
+this creates a file  user.go and produces the struct below plus the package name and with
 
 ```go
 package models
@@ -117,16 +117,95 @@ this produces;
 package routes
 
 func UserRoutes(baseResourceURL string, router *gin.Engine) {
-		endpointGroupV1 := router.Group("")
-		{		
-			
-routes_utils.Post(endpointGroupV1, baseResourceURL, "users/v1", controllers.CreateUser())
-routes_utils.Get(endpointGroupV1, baseResourceURL, "users/v1/", controllers.GetUsers())
-routes_utils.Get(endpointGroupV1, baseResourceURL, "users/v1/:customerId", controllers.GetUsersByClientId())
-routes_utils.Get(endpointGroupV1, baseResourceURL, "users/v1/getById/:id", controllers.GetUserById())
-routes_utils.Put(endpointGroupV1, baseResourceURL, "users/v1/:id", controllers.UpdateUserById())
-routes_utils.Del(endpointGroupV1, baseResourceURL, "users/v1/:id", controllers.DeleteUserById())
-		}
-	}
+
+	endpointGroupV1 := router.Group("")
+	{
+		routes_utils.Post(endpointGroupV1, baseResourceURL, "users/v1", controllers.CreateUser())
+		routes_utils.Get(endpointGroupV1, baseResourceURL, "users/v1/", controllers.GetUsers())
+		routes_utils.Get(endpointGroupV1, baseResourceURL, "users/v1/:customerId", controllers.GetUsersByClientId())
+		routes_utils.Get(endpointGroupV1, baseResourceURL, "users/v1/getById/:id", controllers.GetUserById())
+		routes_utils.Put(endpointGroupV1, baseResourceURL, "users/v1/:id", controllers.UpdateUserById())
+		routes_utils.Del(endpointGroupV1, baseResourceURL, "users/v1/:id", controllers.DeleteUserById())
+	}}
+
+```
+
+# for ui (svelte/svelte-kit)
+
+to add a model;
+
+```cli
+gen-crud uimodel User p_userName-string p_age-number p_business-IBusiness p_branches-[]IBranch
+```
+this generates
+
+```typescript
+interface IUser {
+    userName:string
+    age:number
+    business:IBusiness
+    branches:[]IBranch
+}
+
+export const instantiateUser = (m?: Partial<IUser>): IUser => {
+    const defaults: IUser = {
+        userName:"",
+        age:0,
+        business:instantiateBusiness(),
+        branches:new Array<IBranch>(),
+    }
+    return {
+        ...defaults,
+        ...m
+    }
+}
+export default IUser
+
+```
+
+to add a store;
+
+```cli
+gen-crud store User
+```
+
+this generates
+
+```typescript
+export const allUserDetailsStore = writable(new List<IUserDetail>());
+
+export const userDetailToEdit = writable(instantiateUserDetail());
+
+export const mapOfUserDetailsToIDs = writable(new KeyValueMap<number, IUserDetail>());
+
+export let listOfUserDetails = new List<IUserDetail>();
+
+allUserDetailsStore.subscribe((list) => {
+        listOfUserDetails = list;
+    }
+);
+
+export let mapOfUserDetails = new KeyValueMap<number, IUserDetail>();
+
+mapOfUserDetailsToIDs.subscribe((map) => {
+    mapOfUserDetails = map;
+});
+
+export let aUserDetail = instantiateUserDetail();
+
+userDetailToEdit.subscribe((cat) => {
+    aUserDetail = cat;
+});
+
+export const getUserDetailById = (id: number): IUserDetail | undefined => {
+    let val = instantiateUserDetail();
+    mapOfUserDetailsToIDs.subscribe(c => {
+        if (c.get(Number(id))) {
+            val = c.get(Number(id))!
+        }
+    });
+    return val.id > 0 ? val : undefined
+}
+
 
 ```
