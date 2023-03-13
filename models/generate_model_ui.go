@@ -57,6 +57,11 @@ func (g *GenerateModelUI) AddInstantiation() string {
 				instantiate := fmt.Sprintf(`instantiate%v()`, trimLeftChar(fieldType))
 				defaults.WriteString(fmt.Sprintf("\t%v:%v\n", fieldName, instantiate))
 			}
+			// has array
+			if strings.HasPrefix(strings.ToLower(fieldType), "[]") {
+				instantiate := fmt.Sprintf(`new Array<%v>()`, strings.ReplaceAll(fieldType, "[]", ""))
+				defaults.WriteString(fmt.Sprintf("\t%v:%v\n", fieldName, instantiate))
+			}
 		}
 		//defaults.WriteString("\n")
 	}
@@ -81,7 +86,8 @@ func (g *GenerateModelUI) AddInstantiation() string {
 	defaults.WriteString(" }\n") // close return bracket
 
 	sbInstantiate.WriteString(defaults.String())
-	sbInstantiate.WriteString(fmt.Sprintf("}")) // closing brace (bracket)
+	sbInstantiate.WriteString(fmt.Sprintf("}\n"))                                  // closing brace (bracket)
+	sbInstantiate.WriteString(fmt.Sprintf("export default I%v", g.GetModelName())) // closing brace (bracket)
 
 	return sbInstantiate.String()
 }
@@ -90,7 +96,7 @@ func (g *GenerateModelUI) SetModel() *GenerateModelUI {
 	var sb strings.Builder
 
 	sb.WriteString(fmt.Sprintf("\n"))
-	// struct opening
+	// model opening
 	sb.WriteString(fmt.Sprintf("\ninterface I%v {\n", g.GetModelName()))
 
 	for _, arg := range g.Args {
