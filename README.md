@@ -135,7 +135,7 @@ func UserRoutes(baseResourceURL string, router *gin.Engine) {
 to add a model;
 
 ```cli
-gen-crud uimodel User p_userName-string p_age-number p_business-IBusiness p_branches-[]IBranch
+gen-crud uimodel User p_userName-string p_age-number p_business-IBusiness p_branches-[]IBranch dir_models
 ```
 this generates
 
@@ -166,8 +166,10 @@ export default IUser
 to add a store;
 
 ```cli
-gen-crud store User
+gen-crud store User dir_stores
 ```
+
+# NOTE: dir_store means the directory is store... e.g dir_stores/users
 
 this generates
 
