@@ -49,18 +49,18 @@ func (g *GenerateModelUI) AddInstantiation() string {
 	addDefaults := func(fieldName, fieldType string) {
 		switch strings.ToLower(fieldType) {
 		case "number":
-			defaults.WriteString(fmt.Sprintf("\t%v:%v\n", fieldName, 0))
+			defaults.WriteString(fmt.Sprintf("\t%v:%v,\n", fieldName, 0))
 		case "string":
-			defaults.WriteString(fmt.Sprintf("\t%v:%v\n", fieldName, `""`))
+			defaults.WriteString(fmt.Sprintf("\t%v:%v,\n", fieldName, `""`))
 		default:
 			if strings.HasPrefix(strings.ToLower(fieldType), "i") {
 				instantiate := fmt.Sprintf(`instantiate%v()`, trimLeftChar(fieldType))
-				defaults.WriteString(fmt.Sprintf("\t%v:%v\n", fieldName, instantiate))
+				defaults.WriteString(fmt.Sprintf("\t%v:%v,\n", fieldName, instantiate))
 			}
 			// has array
 			if strings.HasPrefix(strings.ToLower(fieldType), "[]") {
 				instantiate := fmt.Sprintf(`new Array<%v>()`, strings.ReplaceAll(fieldType, "[]", ""))
-				defaults.WriteString(fmt.Sprintf("\t%v:%v\n", fieldName, instantiate))
+				defaults.WriteString(fmt.Sprintf("\t%v:%v,\n", fieldName, instantiate))
 			}
 		}
 		//defaults.WriteString("\n")

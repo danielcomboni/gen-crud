@@ -4,8 +4,12 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"gen-crud/stores"
+	"gen-crud/utils"
+	"github.com/iancoleman/strcase"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 // storeCmd represents the store command
@@ -21,6 +25,21 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := stores.AddStore(args)
 		println(c)
+
+		dir := "stores"
+
+		for _, arg := range args {
+			if strings.HasPrefix(arg, "dir_") {
+				dir = strings.ReplaceAll(arg, "dir_", "")
+			}
+		}
+
+		modelName := args[0]
+
+		fileName := fmt.Sprintf("%v.ts", strcase.ToLowerCamel(utils.ToPlural(modelName)))
+
+		utils.WriteFile(dir, fileName, c)
+
 	},
 }
 

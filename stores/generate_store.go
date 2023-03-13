@@ -12,39 +12,18 @@ func AddStore(args []string) string {
 
 	modelName := args[0]
 	pluralModelName := utils.ToPlural(modelName)
-	sb.WriteString(fmt.Sprintf("export const all%vStore = writable(new List<%v>());\n", pluralModelName, modelName))
-	sb.WriteString(fmt.Sprintf("export const %vToEdit = writable(instantiate%v());\n", strcase.ToLowerCamel(modelName), modelName))
-	sb.WriteString(fmt.Sprintf("export const mapOf%vToIDs = writable(new KeyValueMap<number, I%v>());\n", pluralModelName, modelName))
+	sb.WriteString(fmt.Sprintf("export const all%vStore = writable(new List<I%v>());\n\n", pluralModelName, modelName))
+	sb.WriteString(fmt.Sprintf("export const %vToEdit = writable(instantiate%v());\n\n", strcase.ToLowerCamel(modelName), modelName))
+	sb.WriteString(fmt.Sprintf("export const mapOf%vToIDs = writable(new KeyValueMap<number, I%v>());\n\n", pluralModelName, modelName))
 	sb.WriteString(fmt.Sprintf("export let listOf%v = new List<I%v>();\n\n", pluralModelName, modelName))
-	sb.WriteString(fmt.Sprintf(`all%vStore.subscribe((list) => {
-											listOf%v = list;
-										});
-`, pluralModelName, pluralModelName))
+	sb.WriteString(fmt.Sprintf("all%vStore.subscribe((list) => {\n\tlistOf%v = list;\n}\n);\n\n", pluralModelName, pluralModelName))
 
-	sb.WriteString(fmt.Sprintf("export let mapOf%v = new KeyValueMap<number, I%v>();\n", pluralModelName, modelName))
-	sb.WriteString(fmt.Sprintf(`mapOf%vToIDs.subscribe((map) => {
-										    mapOf%v = map;
-										});
+	sb.WriteString(fmt.Sprintf("export let mapOf%v = new KeyValueMap<number, I%v>();\n\n", pluralModelName, modelName))
+	sb.WriteString(fmt.Sprintf("mapOf%vToIDs.subscribe((map) => {\n\tmapOf%v = map;\n});\n\n", pluralModelName, pluralModelName))
 
-						`, pluralModelName, pluralModelName))
-
-	sb.WriteString(fmt.Sprintf("export let a%v = instantiate%v();\n", modelName, modelName))
-	sb.WriteString(fmt.Sprintf("export let a%v = instantiate%v();\n", modelName, modelName))
-	sb.WriteString(fmt.Sprintf(`%vToEdit.subscribe((cat) => {
-											a%v = cat;
-										});
-
-									`, strcase.ToLowerCamel(modelName), modelName))
-	sb.WriteString(fmt.Sprintf(`export const get%vById = (id: number): I%v | undefined => {
-										let val = instantiate%v()
-										mapOf%vToIDs.subscribe(c => {
-											if (c.get(Number(id))) {
-												val = c.get(Number(id))!
-											}
-										})
-										return val.id > 0 ? val : undefined
-									}
-`, strcase.ToLowerCamel(modelName), modelName, modelName, pluralModelName))
+	sb.WriteString(fmt.Sprintf("export let a%v = instantiate%v();\n\n", modelName, modelName))
+	sb.WriteString(fmt.Sprintf("%vToEdit.subscribe((cat) => {\n\ta%v = cat;\n});\n\n", strcase.ToLowerCamel(modelName), modelName))
+	sb.WriteString(fmt.Sprintf("export const get%vById = (id: number): I%v | undefined => {\n\tlet val = instantiate%v();\n\tmapOf%vToIDs.subscribe(c => {\n\t\tif (c.get(Number(id))) {\n\t\t\tval = c.get(Number(id))!\n\t\t}\n});\n\treturn val.id > 0 ? val : undefined\n}\n\n", strcase.ToCamel(modelName), modelName, modelName, pluralModelName))
 
 	return sb.String()
 

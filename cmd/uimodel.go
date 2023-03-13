@@ -4,8 +4,12 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"gen-crud/models"
+	"gen-crud/utils"
+	"github.com/iancoleman/strcase"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 // uimodelCmd represents the uimodel command
@@ -22,6 +26,18 @@ to quickly create a Cobra application.`,
 		c := new(models.GenerateModelUI).SetModelArgs(args)
 		println(c.GetModel())
 		println(c.AddInstantiation())
+
+		dir := "models"
+
+		for _, arg := range args {
+			if strings.HasPrefix(arg, "dir_") {
+				dir = strings.ReplaceAll(arg, "dir_", "")
+			}
+		}
+
+		d := fmt.Sprintf("%v\n%v", c.GetModel(), c.AddInstantiation())
+		fileName := fmt.Sprintf("%v.ts", strcase.ToLowerCamel(c.GetModelName()))
+		utils.WriteFile(dir, fileName, d)
 	},
 }
 
