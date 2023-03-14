@@ -211,3 +211,39 @@ export const getUserDetailById = (id: number): IUserDetail | undefined => {
 
 
 ```
+
+# generate a create component
+
+```cli
+gen-crud uicreate component/test Test f_input::t_text::n_username f_input::t_checkbox::n_isAdmin
+```
+
+this produces Test.svelte file in the directory path component/test
+
+```typescript
+<script lang="ts">
+
+	async function handleSubmit() {
+		// todo...please add your here to submit...
+	}
+
+</script>
+
+<NoRights entityName="" action="">
+	<form on:submit|preventDefault={handleSubmit}>
+	
+
+	
+
+	<input  type="text" name="username" id="username" />
+
+	<input  type="checkbox" name="isAdmin" id="isAdmin" />
+
+	<FourthColumnGridOfFour>
+		<IosButtonSmallGreen btnLabel="save" btnType="submit" />
+	</FourthColumnGridOfFour>
+
+	</form>
+
+</NoRights>
+```
