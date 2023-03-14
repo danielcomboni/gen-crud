@@ -292,6 +292,7 @@ produces a file ViewUsers.svelte in the directory views
 		});
 	};
 </script>
+
 <NoRights entityName="currencies" action="view">
 	<GenericTableWithDeleteAndReload
 		{all}
