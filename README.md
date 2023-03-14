@@ -247,3 +247,61 @@ this produces Test.svelte file in the directory path component/test
 
 </NoRights>
 ```
+
+# to add a view
+
+```cli
+ gen-crud view dir_views model_User
+```
+
+produces a file ViewUsers.svelte in the directory views
+
+```typescript
+<script lang="ts">
+	let all = new Array<IUser>();
+	const columns: IColumnProps[] = [
+		{
+			name: '#',
+			valuePath: 'id'
+		},
+		{
+			name: 'Created On',
+			valuePath: 'createdAt',
+			expressedFormatter: true,
+			format: (row: IUser) => {
+				return `${new Date(row.createdAt).toLocaleDateString()} ${new Date(
+					row.createdAt
+				).toLocaleTimeString()}`;
+			}
+		},
+];
+
+	const deleteRow = (config: IRequestResponseVariable, id: number) => {
+		UsersHttpHandler.getInstance('deleting...').deleteById(config, id);
+	};	const loadOrReload = () => {
+		UsersHttpHandler.getInstance('loading currencies...').getAll({
+			url: endpoints.users.getAllByClientId(
+				Number(ConstantsLocalStorage.getCustomerId())
+			),
+			setData: (d: any) => {
+				console.log(' to tabulate', d);
+			}
+			setData: (d: any) => {
+				console.log(' to tabulate', d);
+			}
+		});
+	};
+</script>
+<NoRights entityName="currencies" action="view">
+	<GenericTableWithDeleteAndReload
+		{all}
+		mapOfEntitiesToIDs={mapOfUsersToIDs}
+		entityToEdit={userToEdit}
+		{columns}
+		deleteByIdEndpoint={endpoints.users.getAllByClientId}
+		{loadOrReload}
+		deleteFn={deleteRow}
+	/>
+</NoRights>
+
+```
