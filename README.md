@@ -247,21 +247,3 @@ this produces Test.svelte file in the directory path component/test
 
 </NoRights>
 ```
-
-# add httpclient handler
-
-to add a handler;
-
-```cli
-gen-crud httpclient dir_httpclient model_User
-```
-
-this produces a file called handler.ts in the specified dir_ (directory)
-
-```typescript
-export class UsersHttpHandler extends GeneralHttpHandler<IUser> {
-	public static getInstance(progressMessage = "please wait...") {
-		return new UsersHttpHandler(allUsersStore, mapOfUsersToIDs, userToEdit, progressMessage);
-	}
-}
-```
