@@ -306,3 +306,20 @@ produces a file ViewUsers.svelte in the directory views
 </NoRights>
 
 ```
+
+# to add http client
+
+```cli
+gen-crud httpclient dir_httpclient model_User
+```
+
+this creates a file handler in the directory httpclient with the required model http handler template
+ and produces;
+
+```typescript
+export class UsersHttpHandler extends GeneralHttpHandler<IUser> {
+	public static getInstance(progressMessage = "please wait...") {
+		return new UsersHttpHandler(allUsersStore, mapOfUsersToIDs, userToEdit, progressMessage);
+	}
+}
+```
